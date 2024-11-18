@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 5px;
+        }
+        .result p {
+            margin: 0;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        /* Responsive Design */
+        @media screen and (max-width: 600px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+            input, select, button {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Medicine Calculator</h2>
+        <label for="drug">Select Drug:</label>
+        <select id="drug">
+            <option value="piriton">Piriton (Chlorpheniramine)</option>
+            <option value="terbutaline">Terbutaline</option>
+            <option value="salbutamol">Salbutamol (Syrup/Tablet)</option>
+            <option value="salbutamol_inhaler">Salbutamol (Inhaler)</option>
+            <option value="salmeterol_fluticasone">Salmeterol + Fluticasone</option>
+        </select>
+
+        <label for="ageYears">Age (Years):</label>
+        <input type="number" id="ageYears" placeholder="Enter years (e.g., 1)" />
+
+        <label for="ageMonths">Age (Months):</label>
+        <input type="number" id="ageMonths" placeholder="Enter months (e.g., 6)" />
+
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" placeholder="Enter weight in kg" />
+
+        <button onclick="calculateDosage()">Calculate Dosage</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function calculateDosage() {
+            const drug = document.getElementById("drug").value;
+            const ageYears = parseInt(document.getElementById("ageYears").value) || 0;
+            const ageMonths = parseInt(document.getElementById("ageMonths").value) || 0;
+            const weight = parseFloat(document.getElementById("weight").value);
+            const resultDiv = document.getElementById("result");
+
+            if (isNaN(weight) || weight <= 0) {
+                alert("Please enter a valid weight.");
+                return;
+            }
+
+            const totalMonths = ageYears * 12 + ageMonths;
+            let minDose, maxDose, frequency, form, inhalerDose, syrupDose;
+
+            switch (drug) {
+                case "piriton":
+                    minDose = weight * 0.1;
+                    form = "Syrup (2 mg/5 mL)";
+                    frequency = "3–4 times daily";
+                    syrupDose = `${(minDose / 2).toFixed(2)} mL per dose`;
+                    break;
+
+                case "terbutaline":
+                    minDose = weight * 0.075;
+                    maxDose = weight * 0.15;
+                    form = "Syrup (1.5 mg/5 mL)";
+                    frequency = "2–3 times daily";
+                    syrupDose = `${(minDose / 1.5).toFixed(2)}–${(maxDose / 1.5).toFixed(2)} mL per dose`;
+                    break;
+
+                case "salbutamol":
+                    minDose = weight * 0.1;
+                    maxDose = weight * 0.2;
+                    form = "Syrup/Tablets (2 mg/5 mL)";
+                    frequency = "3–4 times daily";
+                    syrupDose = `${(minDose / 2).toFixed(2)}–${(maxDose / 2).toFixed(2)} mL per dose`;
+                    break;
+
+                case "salbutamol_inhaler":
+                    inhalerDose = "2–4 puffs every 4–6 hours";
+                    form = "Inhaler (100 mcg per puff)";
+                    frequency = "Max 12 puffs/day";
+                    break;
+
+                case "salmeterol_fluticasone":
+                    inhalerDose = "2 inhalations twice daily";
+                    form = "Inhaler (50/100 mcg)";
+                    frequency = "Max 4 inhalations/day";
+                    break;
+
+                default:
+                    alert("Invalid drug selected.");
+                    return;
+            }
+
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = `
+                <p><strong>Drug:</strong> ${drug}</p>
+                <p><strong>Form:</strong> ${form}</p>
+                <p><strong>Frequency:</strong> ${frequency}</p>
+                ${syrupDose ? `<p><strong>Syrup Dosage:</strong> ${syrupDose}</p>` : ""}
+                ${inhalerDose ? `<p><strong>Inhaler Dosage:</strong> ${inhalerDose}</p>` : ""}
+            `;
+        }
+    </script>
+</body>
+</html>
